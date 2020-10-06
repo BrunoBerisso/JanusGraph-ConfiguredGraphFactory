@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+
+  cassandra:
+    image: cassandra:3.11
+    container_name: cassandra
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_DC: dc1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+
+  janusgraph:
+    image: janusgraph/janusgraph:latest
+    container_name: janusgraph
+    environment:
+      - JANUS_STORAGE_TIMEOUT=60 # Wait up to 1 min for the storage service to come up
+    ports:
+      - "8182:8182"
+    volumes:
+      # bind mounts for configs; use read only so not overridden by environment variables
+      - "./janusgraph/config:/etc/opt/janusgraph/:ro"
+      - "./janusgraph/initdb.d:/docker-entrypoint-initdb.d/:ro"
+    depends_on:
+      - cassandra
+
+volumes:
+  cassandra-data:
+
+networks:
+  default:
+    external:
+      name: jgTestNetwork
