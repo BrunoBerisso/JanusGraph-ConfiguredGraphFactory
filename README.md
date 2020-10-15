@@ -39,7 +39,7 @@ gremlin> default_graph_traversal.V().valueMap()
 3. Create a new graph configuration
 ```
 gremlin> map = [:]
-gremlin> map.put("sotrage.backend", "inmemory")
+gremlin> map.put("storage.backend", "inmemory")
 ==>null
 gremlin> map.put("graph.graphname", "volatile_graph")
 ==>null
